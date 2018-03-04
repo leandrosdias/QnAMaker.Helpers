@@ -5,7 +5,7 @@
 [![Issues open](https://img.shields.io/github/issues/leandrosdias/qnamaker.helpers.svg)](https://github.com/leandrosdias/qnamaker.Helpers/)
 
 ## Dependencies
-.NET Standard 2.0
+.NET Standard 4.6.1
 
 Supported frameworks: [https://docs.microsoft.com/pt-br/dotnet/standard/net-standard](https://docs.microsoft.com/pt-br/dotnet/standard/net-standard)
 
@@ -41,9 +41,6 @@ Check the our Wiki: [https://github.com/leandrosdias/QnAMaker.Helpers/wiki/get-s
 
 #### Answer
 * Generate
-
-#### Publish
-* Publish app
 
 ## Author
 
