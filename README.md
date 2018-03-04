@@ -6,6 +6,7 @@
 
 ## Dependencies
 .NET Framework 4.6.1
+
 .Newtonsoft.Json 11.0.1
 
 ## Installing / Getting started
