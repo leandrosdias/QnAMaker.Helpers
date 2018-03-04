@@ -24,7 +24,7 @@ dotnet add package QnAMaker.Helpers
 ```
 ## How to Use
 
-Check the our [Wiki] (https://github.com/leandrosdias/QnAMaker.Helpers/wiki/get-started):
+Check the our [Wiki](https://github.com/leandrosdias/QnAMaker.Helpers/wiki/get-started) :
 
 ### Implemented Features (v1.0)
 #### 
