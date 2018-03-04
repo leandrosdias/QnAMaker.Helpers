@@ -5,9 +5,8 @@
 [![Issues open](https://img.shields.io/github/issues/leandrosdias/qnamaker.helpers.svg)](https://github.com/leandrosdias/qnamaker.Helpers/)
 
 ## Dependencies
-.NET Standard 4.6.1
-
-Supported frameworks: [https://docs.microsoft.com/pt-br/dotnet/standard/net-standard](https://docs.microsoft.com/pt-br/dotnet/standard/net-standard)
+.NET Framework 4.6.1
+.Newtonsoft.Json 11.0.1
 
 ## Installing / Getting started
 
