@@ -18,15 +18,17 @@ namespace QnAMaker.Helpers
         public string KnowledgeId { get; set; }
         public string SubscriptionKey { get; set; }
         public string EndPoint { get; set; }
+        public string Enviroment { get; set; }
 
-        public QnAMakerClient(string knowledgeId, string subscriptionKey, string endPoint = "")
+        public QnAMakerClient(string knowledgeId, string subscriptionKey, string env = "test", string endPoint = "")
         {
             if (string.IsNullOrWhiteSpace(endPoint))
-                endPoint = "https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/";
+                endPoint = "https://westus.api.cognitive.microsoft.com/qnamaker/";
 
             KnowledgeId = knowledgeId;
             SubscriptionKey = subscriptionKey;
             EndPoint = endPoint;
+            Enviroment = env;
         }
 
         /// <summary>
@@ -38,14 +40,14 @@ namespace QnAMaker.Helpers
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
                 return ResultHelper.GetGenericError("SubscriptionKey is empty");
 
-            if (string.IsNullOrWhiteSpace(knowledgeBase.Name))
-                return ResultHelper.GetGenericError("Field 'name' is required");
+            //if (string.IsNullOrWhiteSpace(knowledgeBase.Name))
+            //    return ResultHelper.GetGenericError("Field 'name' is required");
 
-            if (knowledgeBase.QnAPairs != null && knowledgeBase.QnAPairs.Count > 1000)
-                return ResultHelper.GetGenericError("Max 1000 Q-A pair allowed per request");
+            //if (knowledgeBase.QnAPairs != null && knowledgeBase.QnAPairs.Count > 1000)
+            //    return ResultHelper.GetGenericError("Max 1000 Q-A pair allowed per request");
 
-            if (knowledgeBase.Urls != null && knowledgeBase.Urls.Count > 5)
-                return ResultHelper.GetGenericError("Max 5 urls allowed per request");
+            //if (knowledgeBase.Urls != null && knowledgeBase.Urls.Count > 5)
+            //    return ResultHelper.GetGenericError("Max 5 urls allowed per request");
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
@@ -91,7 +93,7 @@ namespace QnAMaker.Helpers
                 var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
                     return ResultHelper.GetSucess("Knowledge base deleted successfully");
-                
+
                 var responseContent = await response.Content.ReadAsStringAsync();
                 return ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(responseContent));
             }
@@ -129,7 +131,7 @@ namespace QnAMaker.Helpers
         /// Downloads all the data associated with the specified knowledge base.
         /// </summary>
         /// <returns>If Error return null, if sucess return string with data</returns>
-        public async Task<string> DownloadKnowlegdeBase()
+        public async Task<KnowledgeBase> DownloadKnowlegdeBase()
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
                 return null;
@@ -137,10 +139,9 @@ namespace QnAMaker.Helpers
             if (string.IsNullOrWhiteSpace(KnowledgeId))
                 return null;
 
+            var uri = EndPoint + "/v4.0/knowledgebases/" + KnowledgeId + "/" + Enviroment + "/qna";
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
-
-            var uri = EndPoint + KnowledgeId;
 
             using (var request = new HttpRequestMessage(new HttpMethod("GET"), uri))
             {
@@ -150,21 +151,9 @@ namespace QnAMaker.Helpers
 
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                var url = JsonConvert.DeserializeObject<string>(jsonResponse);
-                var webRequest = WebRequest.Create(url);
-                var webResponse = await webRequest.GetResponseAsync().ConfigureAwait(false);
+                var knowledgeBase = JsonConvert.DeserializeObject<KnowledgeBase>(jsonResponse);
 
-                var resultStringBuilder = new StringBuilder();
-                using (var responseReader = new StreamReader(webResponse.GetResponseStream()))
-                {
-                    string line;
-                    while ((line = responseReader.ReadLine()) != null)
-                    {
-                        var lineSplit = line.Replace("\\n", "").Split('\t');
-                        resultStringBuilder.AppendLine($"{lineSplit[0].Trim()}|{lineSplit[1].Trim()}|{lineSplit[2].Trim()}");
-                    }
-                }
-                return resultStringBuilder.ToString();
+                return knowledgeBase;
             }
         }
 
