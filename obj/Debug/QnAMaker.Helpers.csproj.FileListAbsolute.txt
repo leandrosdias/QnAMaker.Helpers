@@ -1,8 +1,0 @@
-C:\Users\Leandro\Documents\Visual Studio 2017\Projects\QnAMaker.Helpers\QnAMaker.Helpers\bin\Debug\QnAMaker.Helpers.dll
-C:\Users\Leandro\Documents\Visual Studio 2017\Projects\QnAMaker.Helpers\QnAMaker.Helpers\bin\Debug\QnAMaker.Helpers.pdb
-C:\Users\Leandro\Documents\Visual Studio 2017\Projects\QnAMaker.Helpers\QnAMaker.Helpers\bin\Debug\Newtonsoft.Json.dll
-C:\Users\Leandro\Documents\Visual Studio 2017\Projects\QnAMaker.Helpers\QnAMaker.Helpers\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Leandro\Documents\Visual Studio 2017\Projects\QnAMaker.Helpers\QnAMaker.Helpers\obj\Debug\QnAMaker.Helpers.csprojResolveAssemblyReference.cache
-C:\Users\Leandro\Documents\Visual Studio 2017\Projects\QnAMaker.Helpers\QnAMaker.Helpers\obj\Debug\QnAMaker.Helpers.csproj.CoreCompileInputs.cache
-C:\Users\Leandro\Documents\Visual Studio 2017\Projects\QnAMaker.Helpers\QnAMaker.Helpers\obj\Debug\QnAMaker.Helpers.dll
-C:\Users\Leandro\Documents\Visual Studio 2017\Projects\QnAMaker.Helpers\QnAMaker.Helpers\obj\Debug\QnAMaker.Helpers.pdb
