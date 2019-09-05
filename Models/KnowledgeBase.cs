@@ -9,11 +9,8 @@ namespace QnAMaker.Helpers.Models
 {
     public class KnowledgeBase
     {
-        [JsonProperty("name")]
-        public string Name { get; set; }
-        [JsonProperty("qnapairs")]
-        public List<QnAPair> QnAPairs { get; set; }
-        [JsonProperty("urls")]
-        public List<string> Urls { get; set; }
+        [JsonProperty("qnaDocuments")]
+        public QnADocument[] QnADocuments { get; set; }
+
     }
 }
