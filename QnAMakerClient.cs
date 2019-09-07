@@ -27,7 +27,7 @@ namespace QnAMaker.Helpers
         /// <summary>
         /// Create a new Knowledge Base. SubscriptionKey and Name is required
         /// </summary>
-        /// <returns>If sucess set KnowledgeBaseId and return Erro.Code empty</returns>
+        /// <returns>If error return in ErrorResponse</returns>
         public async Task<KnowledgeBaseResult> CreateKnowledgeBase(KnowledgeBase knowledgeBase)
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
@@ -56,28 +56,28 @@ namespace QnAMaker.Helpers
         /// <summary>
         /// Delete Knowledge Base by Id
         /// </summary>
-        /// <returns>If sucess return Erro.Code empty</returns>
+        /// <returns>If sucess return true</returns>
         public async Task<object> DeleteKnowledgeBase()
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return null;//ResultHelper.GetGenericError("SubscriptionKey is empty");
+                return new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty");
 
             if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return null;// ResultHelper.GetGenericError("KnowledgeId is empty");
+                return new ErrorResponse(ErrorCodeType.KbNotFound, "KnowledgeId is empty");
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
 
-            var uri = EndPoint + KnowledgeId;
+            var uri = EndPoint + "/v4.0/knowledgebases/" + KnowledgeId;
 
             using (var request = new HttpRequestMessage(new HttpMethod("DELETE"), uri))
             {
                 var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
-                    return null;// ResultHelper.GetSucess("Knowledge base deleted successfully");
+                    return true;
 
-                var responseContent = await response.Content.ReadAsStringAsync();
-                return null;// ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(responseContent));
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ErrorResult>(jsonResponse);
             }
         }
 
