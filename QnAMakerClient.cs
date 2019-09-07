@@ -32,7 +32,7 @@ namespace QnAMaker.Helpers
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
                 return new KnowledgeBaseResult(new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty"));
-            
+
             if (string.IsNullOrWhiteSpace(knowledgeBase.Name))
                 return new KnowledgeBaseResult(new ErrorResponse(ErrorCodeType.FieldRequired, "Field 'name' is required"));
 
@@ -116,10 +116,10 @@ namespace QnAMaker.Helpers
         public async Task<KnowledgeBase> DownloadKnowlegdeBase()
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return null;
+                return new KnowledgeBase(new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty"));
 
             if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return null;
+                return new KnowledgeBase(new ErrorResponse(ErrorCodeType.KbNotFound, "KnowledgeId is empty"));
 
             var uri = EndPoint + "/v4.0/knowledgebases/" + KnowledgeId + "/" + Enviroment + "/qna";
             var client = new HttpClient();
@@ -128,9 +128,6 @@ namespace QnAMaker.Helpers
             using (var request = new HttpRequestMessage(new HttpMethod("GET"), uri))
             {
                 var response = await client.SendAsync(request);
-                if (!response.IsSuccessStatusCode)
-                    return null;
-
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var knowledgeBase = JsonConvert.DeserializeObject<KnowledgeBase>(jsonResponse);
