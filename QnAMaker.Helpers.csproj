@@ -44,19 +44,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\ResultHelper.cs" />
     <Compile Include="Models\AnswerReturn.cs" />
     <Compile Include="Models\AnswerReturnList.cs" />
     <Compile Include="Models\DataExtractionResults.cs" />
     <Compile Include="Models\FeedbackRecord.cs" />
     <Compile Include="Models\FeedbackRecords.cs" />
+    <Compile Include="Models\File.cs" />
     <Compile Include="Models\GenerateAnswer.cs" />
     <Compile Include="Models\KnowledgeBase.cs" />
     <Compile Include="Models\KnowledgeBaseResult.cs" />
     <Compile Include="Models\QnADocument.cs" />
     <Compile Include="Models\QnAPair.cs" />
-    <Compile Include="Models\Error.cs" />
-    <Compile Include="Models\Result.cs" />
+    <Compile Include="Models\ErrorResponse.cs" />
     <Compile Include="Models\UpdateAlterations.cs" />
     <Compile Include="Models\UpdateKnowledgeBase.cs" />
     <Compile Include="Models\UpdatePairs.cs" />

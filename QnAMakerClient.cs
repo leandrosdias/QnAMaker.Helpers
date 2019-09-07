@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using QnAMaker.Helpers.Models;
 using Newtonsoft.Json;
-using QnAMaker.Helpers.Helpers;
-using System.Net;
-using System.IO;
 
 namespace QnAMaker.Helpers
 {
@@ -35,24 +28,18 @@ namespace QnAMaker.Helpers
         /// Create a new Knowledge Base. SubscriptionKey and Name is required
         /// </summary>
         /// <returns>If sucess set KnowledgeBaseId and return Erro.Code empty</returns>
-        public async Task<Result> CreateKnowledgeBase(KnowledgeBase knowledgeBase)
+        public async Task<KnowledgeBaseResult> CreateKnowledgeBase(KnowledgeBase knowledgeBase)
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return ResultHelper.GetGenericError("SubscriptionKey is empty");
-
-            //if (string.IsNullOrWhiteSpace(knowledgeBase.Name))
-            //    return ResultHelper.GetGenericError("Field 'name' is required");
-
-            //if (knowledgeBase.QnAPairs != null && knowledgeBase.QnAPairs.Count > 1000)
-            //    return ResultHelper.GetGenericError("Max 1000 Q-A pair allowed per request");
-
-            //if (knowledgeBase.Urls != null && knowledgeBase.Urls.Count > 5)
-            //    return ResultHelper.GetGenericError("Max 5 urls allowed per request");
+                return new KnowledgeBaseResult(new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty"));
+            
+            if (string.IsNullOrWhiteSpace(knowledgeBase.Name))
+                return new KnowledgeBaseResult(new ErrorResponse(ErrorCodeType.FieldRequired, "Field 'name' is required"));
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
 
-            var uri = EndPoint + "create";
+            var uri = EndPoint + "/v4.0/knowledgebases/create";
 
             using (var request = new HttpRequestMessage(new HttpMethod("POST"), uri))
             {
@@ -62,12 +49,7 @@ namespace QnAMaker.Helpers
                 var response = await client.SendAsync(request);
                 var jsonResponse = await response.Content.ReadAsStringAsync();
 
-                if (!response.IsSuccessStatusCode)
-                    return ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
-
-                var knowledgeResult = JsonConvert.DeserializeObject<KnowledgeBaseResult>(jsonResponse);
-                KnowledgeId = knowledgeResult.KnowledgeBaseId;
-                return ResultHelper.GetSucess("Knowledge base created successfully");
+                return JsonConvert.DeserializeObject<KnowledgeBaseResult>(jsonResponse);
             }
         }
 
@@ -75,13 +57,13 @@ namespace QnAMaker.Helpers
         /// Delete Knowledge Base by Id
         /// </summary>
         /// <returns>If sucess return Erro.Code empty</returns>
-        public async Task<Result> DeleteKnowledgeBase()
+        public async Task<object> DeleteKnowledgeBase()
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return ResultHelper.GetGenericError("SubscriptionKey is empty");
+                return null;//ResultHelper.GetGenericError("SubscriptionKey is empty");
 
             if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return ResultHelper.GetGenericError("KnowledgeId is empty");
+                return null;// ResultHelper.GetGenericError("KnowledgeId is empty");
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
@@ -92,10 +74,10 @@ namespace QnAMaker.Helpers
             {
                 var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
-                    return ResultHelper.GetSucess("Knowledge base deleted successfully");
+                    return null;// ResultHelper.GetSucess("Knowledge base deleted successfully");
 
                 var responseContent = await response.Content.ReadAsStringAsync();
-                return ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(responseContent));
+                return null;// ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(responseContent));
             }
         }
 
@@ -192,13 +174,13 @@ namespace QnAMaker.Helpers
         /// Publish all unpublished in the knowledgebase to the prod endpoint
         /// </summary>
         /// <returns>If sucess Error.Code is empty</returns>
-        public async Task<Result> PublishKnowlegdeBase()
+        public async Task<object> PublishKnowlegdeBase()
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return ResultHelper.GetGenericError("SubscriptionKey is empty");
+                return null; // ResultHelper.GetGenericError("SubscriptionKey is empty");
 
             if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return ResultHelper.GetGenericError("KnowledgeId is empty");
+                return null; //ResultHelper.GetGenericError("KnowledgeId is empty");
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
@@ -209,10 +191,10 @@ namespace QnAMaker.Helpers
             {
                 var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
-                    return ResultHelper.GetSucess("Knowledge Base published successfully");
+                    return null; //ResultHelper.GetSucess("Knowledge Base published successfully");
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                return ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
+                return null; //ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
             }
         }
 
@@ -220,13 +202,13 @@ namespace QnAMaker.Helpers
         /// Replaces word alterations (synonyms) for the KB with the give records.
         /// </summary>
         /// <returns>If sucess Error.Code is empty</returns>
-        public async Task<Result> UpdateAlterations(UpdateAlterations updateAlterations)
+        public async Task<object> UpdateAlterations(UpdateAlterations updateAlterations)
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return ResultHelper.GetGenericError("SubscriptionKey is empty");
+                return null; //ResultHelper.GetGenericError("SubscriptionKey is empty");
 
             if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return ResultHelper.GetGenericError("KnowledgeId is empty");
+                return null; //ResultHelper.GetGenericError("KnowledgeId is empty");
 
             var client = new HttpClient();
 
@@ -241,10 +223,10 @@ namespace QnAMaker.Helpers
 
                 var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
-                    return ResultHelper.GetSucess("Process completed successfully");
+                    return null; //ResultHelper.GetSucess("Process completed successfully");
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                return ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
+                return null; //ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
             }
         }
 
@@ -252,13 +234,13 @@ namespace QnAMaker.Helpers
         /// Add or delete QnA Pairs and / or URLs to an existing knowledge base.
         /// </summary>
         /// <returns>If sucess Error.Code is empty</returns>
-        public async Task<Result> UpdateKnowledgeBase(UpdateKnowledgeBase updateKnowledgeBase)
+        public async Task<object> UpdateKnowledgeBase(UpdateKnowledgeBase updateKnowledgeBase)
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return ResultHelper.GetGenericError("SubscriptionKey is empty");
+                return null; //ResultHelper.GetGenericError("SubscriptionKey is empty");
 
             if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return ResultHelper.GetGenericError("KnowledgeId is empty");
+                return null; //ResultHelper.GetGenericError("KnowledgeId is empty");
 
             var client = new HttpClient();
 
@@ -273,10 +255,10 @@ namespace QnAMaker.Helpers
 
                 var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
-                    return ResultHelper.GetSucess("Update completed successfully");
+                    return null; //ResultHelper.GetSucess("Update completed successfully");
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                return ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
+                return null; //ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
             }
         }
 
@@ -284,13 +266,13 @@ namespace QnAMaker.Helpers
         /// Train knowledge base.
         /// </summary>
         /// <returns>If Error return null</returns>
-        public async Task<Result> TrainKnowledgeBase(FeedbackRecords feedbackRecords)
+        public async Task<object> TrainKnowledgeBase(FeedbackRecords feedbackRecords)
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return ResultHelper.GetGenericError("SubscriptionKey is empty");
+                return null; //ResultHelper.GetGenericError("SubscriptionKey is empty");
 
             if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return ResultHelper.GetGenericError("KnowledgeId is empty");
+                return null; //ResultHelper.GetGenericError("KnowledgeId is empty");
 
             var client = new HttpClient();
 
@@ -305,10 +287,10 @@ namespace QnAMaker.Helpers
 
                 var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
-                    return ResultHelper.GetSucess("Train completed successfully");
+                    return null; //ResultHelper.GetSucess("Train completed successfully");
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                return ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
+                return null; //ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
             }
         }
     }
