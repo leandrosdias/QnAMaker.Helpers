@@ -105,6 +105,29 @@ namespace QnAMaker.Helpers
         }
 
         /// <summary>
+        /// Gets endpoint keys for an endpoint.
+        /// </summary>
+        /// <returns>>If error return in ErrorResponse</returns>
+        public async Task<EndpointKeys> DownloadEndpointKeys()
+        {
+            if (string.IsNullOrWhiteSpace(SubscriptionKey))
+                return new EndpointKeys(new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty"));
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+
+            var uri = EndPoint + "/v4.0/endpointkeys";
+
+            using (var request = new HttpRequestMessage(new HttpMethod("GET"), uri))
+            {
+                var response = await client.SendAsync(request);
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<EndpointKeys>(jsonResponse);
+            }
+        }
+
+        /// <summary>
         /// Downloads all the data associated with the specified knowledge base.
         /// </summary>
         /// <returns>If Error return null, if sucess return string with data</returns>

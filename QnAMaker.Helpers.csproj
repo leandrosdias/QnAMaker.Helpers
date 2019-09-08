@@ -47,6 +47,7 @@
     <Compile Include="Models\AnswerReturn.cs" />
     <Compile Include="Models\AnswerReturnList.cs" />
     <Compile Include="Models\DataExtractionResults.cs" />
+    <Compile Include="Models\EndpointKeys.cs" />
     <Compile Include="Models\ErrorResult.cs" />
     <Compile Include="Models\FeedbackRecord.cs" />
     <Compile Include="Models\FeedbackRecords.cs" />
