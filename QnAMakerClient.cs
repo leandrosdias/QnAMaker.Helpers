@@ -88,21 +88,16 @@ namespace QnAMaker.Helpers
         public async Task<WordAlterationsResult> DownloadAlterations()
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return null;
-
-            if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return null;
+                return new WordAlterationsResult(new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty"));
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
 
-            var uri = EndPoint + KnowledgeId + "/downloadAlterations";
+            var uri = EndPoint + "/v4.0/alterations";
 
             using (var request = new HttpRequestMessage(new HttpMethod("GET"), uri))
             {
                 var response = await client.SendAsync(request);
-                if (!response.IsSuccessStatusCode)
-                    return null;
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<WordAlterationsResult>(jsonResponse);
