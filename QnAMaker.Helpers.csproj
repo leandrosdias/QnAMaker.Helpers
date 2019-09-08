@@ -44,10 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ActiveLearning.cs" />
     <Compile Include="Models\AnswerReturn.cs" />
     <Compile Include="Models\AnswerReturnList.cs" />
     <Compile Include="Models\DataExtractionResults.cs" />
     <Compile Include="Models\EndpointKeys.cs" />
+    <Compile Include="Models\EndpointSettings.cs" />
     <Compile Include="Models\ErrorResult.cs" />
     <Compile Include="Models\FeedbackRecord.cs" />
     <Compile Include="Models\FeedbackRecords.cs" />
