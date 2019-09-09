@@ -57,6 +57,7 @@
     <Compile Include="Models\GenerateAnswer.cs" />
     <Compile Include="Models\KnowledgeBase.cs" />
     <Compile Include="Models\KnowledgeBaseResult.cs" />
+    <Compile Include="Models\KnowledgeBaseDetails.cs" />
     <Compile Include="Models\QnADocument.cs" />
     <Compile Include="Models\QnAPair.cs" />
     <Compile Include="Models\ErrorResponse.cs" />

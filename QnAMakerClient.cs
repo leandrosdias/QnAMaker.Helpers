@@ -151,6 +151,32 @@ namespace QnAMaker.Helpers
         }
 
         /// <summary>
+        /// Gets Knowledgebase details.
+        /// </summary>
+        /// <returns>>If error return in ErrorResponse</returns>
+        public async Task<KnowledgeBaseDetails> GetKnowledgebaseDetails()
+        {
+            if (string.IsNullOrWhiteSpace(SubscriptionKey))
+                return new KnowledgeBaseDetails(new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty"));
+
+            if (string.IsNullOrWhiteSpace(KnowledgeId))
+                return new KnowledgeBaseDetails(new ErrorResponse(ErrorCodeType.KbNotFound, "KnowledgeId is empty"));
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+
+            var uri = EndPoint + "/v4.0/knowledgebases/" + KnowledgeId;
+
+            using (var request = new HttpRequestMessage(new HttpMethod("GET"), uri))
+            {
+                var response = await client.SendAsync(request);
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<KnowledgeBaseDetails>(jsonResponse);
+            }
+        }
+
+        /// <summary>
         /// Downloads all the data associated with the specified knowledge base.
         /// </summary>
         /// <returns>If Error return null, if sucess return string with data</returns>
