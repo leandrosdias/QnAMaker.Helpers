@@ -309,11 +309,10 @@ namespace QnAMaker.Helpers
             }
         }
 
-
         /// <summary>
         /// Replaces word alterations (synonyms) for the KB with the give records.
         /// </summary>
-        /// <returns>If error return in ErrorResponse</returns>
+        /// <returns>If sucess return true. If error return in ErrorResponse</returns>
         public async Task<object> ReplaceAlterations(UpdateAlterations updateAlterations)
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
@@ -344,7 +343,7 @@ namespace QnAMaker.Helpers
         /// Add or delete QnA Pairs and / or URLs to an existing knowledge base.
         /// </summary>
         /// <returns>If sucess true. If error return ErrorResponse</returns>
-        public async Task<object> UpdateKnowledgeBase(KnowledgeBase updateKnowledgeBase)
+        public async Task<object> ReplaceKnowledgeBase(KnowledgeBase updateKnowledgeBase)
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
                 return new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty");
