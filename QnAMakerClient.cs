@@ -150,6 +150,35 @@ namespace QnAMaker.Helpers
             }
         }
 
+
+        /// <summary>
+        /// Update endpoint settings for an endpoint.
+        /// </summary>
+        /// <returns>>If sucess return true. If error return ErrorResponse</returns>
+        public async Task<object> UpdateEndpointSettings(EndpointSettings endpointSettings)
+        {
+            if (string.IsNullOrWhiteSpace(SubscriptionKey))
+                return new EndpointSettings(new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty"));
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+
+            var uri = EndPoint + "/v4.0/endpointSettings";
+
+            using (var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri))
+            {
+                request.Content = new StringContent(JsonConvert.SerializeObject(endpointSettings), Encoding.UTF8, "application/json");
+
+                var response = await client.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                    return true;
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ErrorResponse>(jsonResponse);
+            }
+        }
+        
         /// <summary>
         /// Gets Knowledgebase details.
         /// </summary>
@@ -227,37 +256,6 @@ namespace QnAMaker.Helpers
         }
 
         /// <summary>
-        /// Returns the list of answers for the given question sorted in descending order of ranking score. Top is 1 by default
-        /// </summary>
-        /// <returns>If Error return null</returns>
-        public async Task<AnswerReturnList> GenerateAnswer(string question, int top = 1)
-        {
-            if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return null;
-
-            if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return null;
-
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
-
-            var uri = EndPoint + KnowledgeId + "/generateAnswer";
-
-            using (var request = new HttpRequestMessage(new HttpMethod("POST"), uri))
-            {
-                var generateAnswer = new GenerateAnswer { Question = question, Top = top };
-                request.Content = new StringContent(JsonConvert.SerializeObject(generateAnswer), Encoding.UTF8, "application/json");
-
-                var response = await client.SendAsync(request);
-                if (!response.IsSuccessStatusCode)
-                    return null;
-
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<AnswerReturnList>(jsonResponse);
-            }
-        }
-
-        /// <summary>
         /// Publish all unpublished in the knowledgebase to the prod endpoint
         /// </summary>
         /// <returns>If sucess Error.Code is empty</returns>
@@ -328,7 +326,6 @@ namespace QnAMaker.Helpers
             {
                 request.Content = new StringContent(JsonConvert.SerializeObject(updateAlterations), Encoding.UTF8, "application/json");
 
-
                 var response = await client.SendAsync(request);
 
                 if (response.IsSuccessStatusCode)
@@ -371,36 +368,5 @@ namespace QnAMaker.Helpers
             }
         }
 
-        /// <summary>
-        /// Train knowledge base.
-        /// </summary>
-        /// <returns>If Error return null</returns>
-        public async Task<object> TrainKnowledgeBase(FeedbackRecords feedbackRecords)
-        {
-            if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return null; //ResultHelper.GetGenericError("SubscriptionKey is empty");
-
-            if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return null; //ResultHelper.GetGenericError("KnowledgeId is empty");
-
-            var client = new HttpClient();
-
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
-
-            var uri = EndPoint + KnowledgeId + "/train";
-
-            using (var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri))
-            {
-                request.Content = new StringContent(JsonConvert.SerializeObject(feedbackRecords),
-                    Encoding.UTF8, "application/json");
-
-                var response = await client.SendAsync(request);
-                if (response.IsSuccessStatusCode)
-                    return null; //ResultHelper.GetSucess("Train completed successfully");
-
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                return null; //ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
-            }
-        }
     }
 }
