@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>C:\Users\leand\source\repos\QnaMakerTeste\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\Users\leand\source\repos\ConsoleQnaMaker\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,6 +58,7 @@
     <Compile Include="Models\KnowledgeBase.cs" />
     <Compile Include="Models\KnowledgeBaseResult.cs" />
     <Compile Include="Models\KnowledgeBaseDetails.cs" />
+    <Compile Include="Models\KnowledgeBases.cs" />
     <Compile Include="Models\QnADocument.cs" />
     <Compile Include="Models\QnAPair.cs" />
     <Compile Include="Models\ErrorResponse.cs" />

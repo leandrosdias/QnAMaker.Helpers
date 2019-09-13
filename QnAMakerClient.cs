@@ -204,9 +204,32 @@ namespace QnAMaker.Helpers
         }
 
         /// <summary>
-        /// Returns the list of answers for the given question sorted in descending order of ranking score. Top is 1 by default
+        /// Downloads all the data associated with the specified knowledge base.
         /// </summary>
-        /// <returns>If Error return null</returns>
+        /// <returns>If Error return null, if sucess return string with data</returns>
+        public async Task<KnowledgeBases> GetKnowledgeBases()
+        {
+            if (string.IsNullOrWhiteSpace(SubscriptionKey))
+                return new KnowledgeBases(new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty"));
+
+            var uri = EndPoint + "/v4.0/knowledgebases/";
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+
+            using (var request = new HttpRequestMessage(new HttpMethod("GET"), uri))
+            {
+                var response = await client.SendAsync(request);
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                return JsonConvert.DeserializeObject<KnowledgeBases>(jsonResponse); ;
+            }
+        }
+        
+        /// <summary>
+                 /// Returns the list of answers for the given question sorted in descending order of ranking score. Top is 1 by default
+                 /// </summary>
+                 /// <returns>If Error return null</returns>
         public async Task<AnswerReturnList> GenerateAnswer(string question, int top = 1)
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
