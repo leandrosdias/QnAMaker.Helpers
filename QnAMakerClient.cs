@@ -204,9 +204,9 @@ namespace QnAMaker.Helpers
         }
 
         /// <summary>
-        /// Downloads all the data associated with the specified knowledge base.
+        /// Get all knowledgebases for user.
         /// </summary>
-        /// <returns>If Error return null, if sucess return string with data</returns>
+        /// <returns>If Error return in ErrorResponse</returns>
         public async Task<KnowledgeBases> GetKnowledgeBases()
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
@@ -264,24 +264,24 @@ namespace QnAMaker.Helpers
         public async Task<object> PublishKnowlegdeBase()
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return null; // ResultHelper.GetGenericError("SubscriptionKey is empty");
+                return new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty");
 
             if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return null; //ResultHelper.GetGenericError("KnowledgeId is empty");
+                return new ErrorResponse(ErrorCodeType.KbNotFound, "KnowledgeId is empty");
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
 
-            var uri = EndPoint + KnowledgeId;
+            var uri = EndPoint + "/v4.0/knowledgebases/" + KnowledgeId;
 
-            using (var request = new HttpRequestMessage(new HttpMethod("PUT"), uri))
+            using (var request = new HttpRequestMessage(new HttpMethod("POST"), uri))
             {
                 var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
-                    return null; //ResultHelper.GetSucess("Knowledge Base published successfully");
+                    return true;
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                return null; //ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
+                return JsonConvert.DeserializeObject<ErrorResponse>(jsonResponse);
             }
         }
 
