@@ -286,6 +286,31 @@ namespace QnAMaker.Helpers
         }
 
         /// <summary>
+        /// Refresh keys of endpoint
+        /// </summary>
+        /// <returns>If error return in ErrorResponse</returns>
+        public async Task<EndpointKeys> RefreshEndpointsKeys(string keyType)
+        {
+            if (string.IsNullOrWhiteSpace(SubscriptionKey))
+                return new EndpointKeys(new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty"));
+
+            var client = new HttpClient();
+
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+
+            var uri = EndPoint + "/v4.0/endpointkeys/" + keyType;
+
+            using (var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri))
+            {
+                var response = await client.SendAsync(request);
+                
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<EndpointKeys>(jsonResponse);
+            }
+        }
+
+
+        /// <summary>
         /// Replaces word alterations (synonyms) for the KB with the give records.
         /// </summary>
         /// <returns>If sucess Error.Code is empty</returns>
