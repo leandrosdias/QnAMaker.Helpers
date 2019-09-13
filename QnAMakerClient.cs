@@ -225,11 +225,11 @@ namespace QnAMaker.Helpers
                 return JsonConvert.DeserializeObject<KnowledgeBases>(jsonResponse); ;
             }
         }
-        
+
         /// <summary>
-                 /// Returns the list of answers for the given question sorted in descending order of ranking score. Top is 1 by default
-                 /// </summary>
-                 /// <returns>If Error return null</returns>
+        /// Returns the list of answers for the given question sorted in descending order of ranking score. Top is 1 by default
+        /// </summary>
+        /// <returns>If Error return null</returns>
         public async Task<AnswerReturnList> GenerateAnswer(string question, int top = 1)
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
@@ -303,7 +303,7 @@ namespace QnAMaker.Helpers
             using (var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri))
             {
                 var response = await client.SendAsync(request);
-                
+
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<EndpointKeys>(jsonResponse);
             }
@@ -313,64 +313,62 @@ namespace QnAMaker.Helpers
         /// <summary>
         /// Replaces word alterations (synonyms) for the KB with the give records.
         /// </summary>
-        /// <returns>If sucess Error.Code is empty</returns>
-        public async Task<object> UpdateAlterations(UpdateAlterations updateAlterations)
+        /// <returns>If error return in ErrorResponse</returns>
+        public async Task<object> ReplaceAlterations(UpdateAlterations updateAlterations)
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return null; //ResultHelper.GetGenericError("SubscriptionKey is empty");
-
-            if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return null; //ResultHelper.GetGenericError("KnowledgeId is empty");
+                return new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty");
 
             var client = new HttpClient();
 
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
 
-            var uri = EndPoint + KnowledgeId + "/updateAlterations";
+            var uri = EndPoint + "/v4.0/alterations";
 
-            using (var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri))
+            using (var request = new HttpRequestMessage(new HttpMethod("PUT"), uri))
             {
                 request.Content = new StringContent(JsonConvert.SerializeObject(updateAlterations), Encoding.UTF8, "application/json");
 
 
                 var response = await client.SendAsync(request);
+
                 if (response.IsSuccessStatusCode)
-                    return null; //ResultHelper.GetSucess("Process completed successfully");
+                    return true;
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                return null; //ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
+                return JsonConvert.DeserializeObject<ErrorResponse>(jsonResponse);
             }
         }
 
         /// <summary>
         /// Add or delete QnA Pairs and / or URLs to an existing knowledge base.
         /// </summary>
-        /// <returns>If sucess Error.Code is empty</returns>
-        public async Task<object> UpdateKnowledgeBase(UpdateKnowledgeBase updateKnowledgeBase)
+        /// <returns>If sucess true. If error return ErrorResponse</returns>
+        public async Task<object> UpdateKnowledgeBase(KnowledgeBase updateKnowledgeBase)
         {
             if (string.IsNullOrWhiteSpace(SubscriptionKey))
-                return null; //ResultHelper.GetGenericError("SubscriptionKey is empty");
+                return new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty");
 
             if (string.IsNullOrWhiteSpace(KnowledgeId))
-                return null; //ResultHelper.GetGenericError("KnowledgeId is empty");
+                return new ErrorResponse(ErrorCodeType.KbNotFound, "KnowledgeId is empty");
 
             var client = new HttpClient();
 
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
 
-            var uri = EndPoint + KnowledgeId;
+            var uri = EndPoint + "/v4.0/knowledgebases/" + KnowledgeId;
 
-            using (var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri))
+            using (var request = new HttpRequestMessage(new HttpMethod("PUT"), uri))
             {
                 request.Content = new StringContent(JsonConvert.SerializeObject(updateKnowledgeBase),
                     Encoding.UTF8, "application/json");
 
                 var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
-                    return null; //ResultHelper.GetSucess("Update completed successfully");
+                    return true;
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                return null; //ResultHelper.GetError(JsonConvert.DeserializeObject<Result>(jsonResponse));
+                return JsonConvert.DeserializeObject<ErrorResponse>(jsonResponse);
             }
         }
 
