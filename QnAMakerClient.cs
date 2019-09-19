@@ -368,5 +368,35 @@ namespace QnAMaker.Helpers
             }
         }
 
+        /// <summary>
+        /// Asynchronous operation to modify a knowledgebase.
+        /// </summary>
+        /// <returns>If sucess KnowledgeBaseResult. If error return in ErrorResponse</returns>
+        public async Task<KnowledgeBaseResult> UpdateKnowledgeBase(UpdateKnowledgeBase updateKnowledgeBase)
+        {
+            if (string.IsNullOrWhiteSpace(SubscriptionKey))
+                return new KnowledgeBaseResult(new ErrorResponse(ErrorCodeType.SubscriptionKeyNotFound, "SubscriptionKey is empty"));
+
+            if (string.IsNullOrWhiteSpace(KnowledgeId))
+                return new KnowledgeBaseResult(new ErrorResponse(ErrorCodeType.KbNotFound, "KnowledgeId is empty"));
+
+            var client = new HttpClient();
+
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+
+            var uri = EndPoint + "/v4.0/knowledgebases/" + KnowledgeId;
+
+            using (var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri))
+            {
+                var teste = JsonConvert.SerializeObject(updateKnowledgeBase);
+                request.Content = new StringContent(JsonConvert.SerializeObject(updateKnowledgeBase),
+                    Encoding.UTF8, "application/json");
+
+                var response = await client.SendAsync(request);
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<KnowledgeBaseResult>(jsonResponse);
+            }
+        }
+
     }
 }

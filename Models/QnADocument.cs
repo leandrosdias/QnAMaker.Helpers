@@ -1,29 +1,34 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace QnAMaker.Helpers.Models
 {
     public class QnADocument
     {
-        [JsonProperty("id")]
+        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public int Id { get; set; }
-        [JsonProperty("answer")]
+        [JsonProperty("answer", NullValueHandling = NullValueHandling.Ignore)]
         public string Answer { get; set; }
-        [JsonProperty("source")]
+        [JsonProperty("source", NullValueHandling = NullValueHandling.Ignore)]
         public string Source { get; set; }
-        [JsonProperty("questions")]
+        [JsonProperty("questions", NullValueHandling = NullValueHandling.Ignore)]
         public string[] Questions { get; set; }
-        [JsonProperty("metadata")]
-        public Metadata[] Metadata { get; set; }
-        [JsonProperty("alternateQuestions")]
+        [JsonProperty("metadata", NullValueHandling = NullValueHandling.Ignore)]
+        public List<Metadata> Metadata { get; set; }
+        [JsonProperty("alternateQuestions", NullValueHandling = NullValueHandling.Ignore)]
         public string AlternateQuestions { get; set; }
-        [JsonProperty("alternateQuestionClusters")]
+        [JsonProperty("alternateQuestionClusters", NullValueHandling = NullValueHandling.Ignore)]
         public object[] AlternateQuestionClusters { get; set; }
-        [JsonProperty("changeStatus")]
+        [JsonProperty("changeStatus", NullValueHandling = NullValueHandling.Ignore)]
         public string ChangeStatus { get; set; }
-        [JsonProperty("kbId")]
+        [JsonProperty("kbId", NullValueHandling = NullValueHandling.Ignore)]
         public string KbId { get; set; }
-        [JsonProperty("context")]
+        [JsonProperty("context", NullValueHandling = NullValueHandling.Ignore)]
         public Context Context { get; set; }
+        public QnADocument()
+        {
+            Metadata = new List<Metadata>();
+        }
     }
 
     public class Context
