@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Users\leand\source\repos\ConsoleQnaMaker\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,21 +44,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\ResultHelper.cs" />
-    <Compile Include="Models\AnswerReturn.cs" />
-    <Compile Include="Models\AnswerReturnList.cs" />
-    <Compile Include="Models\DataExtractionResults.cs" />
-    <Compile Include="Models\FeedbackRecord.cs" />
-    <Compile Include="Models\FeedbackRecords.cs" />
-    <Compile Include="Models\GenerateAnswer.cs" />
+    <Compile Include="Models\ActiveLearning.cs" />
+    <Compile Include="Models\EndpointKeys.cs" />
+    <Compile Include="Models\EndpointSettings.cs" />
+    <Compile Include="Models\ErrorResult.cs" />
+    <Compile Include="Models\File.cs" />
     <Compile Include="Models\KnowledgeBase.cs" />
     <Compile Include="Models\KnowledgeBaseResult.cs" />
+    <Compile Include="Models\KnowledgeBaseDetails.cs" />
+    <Compile Include="Models\KnowledgeBases.cs" />
+    <Compile Include="Models\QnADocument.cs" />
     <Compile Include="Models\QnAPair.cs" />
-    <Compile Include="Models\Error.cs" />
-    <Compile Include="Models\Result.cs" />
+    <Compile Include="Models\ErrorResponse.cs" />
     <Compile Include="Models\UpdateAlterations.cs" />
     <Compile Include="Models\UpdateKnowledgeBase.cs" />
-    <Compile Include="Models\UpdatePairs.cs" />
     <Compile Include="Models\WordAlterations.cs" />
     <Compile Include="Models\WordAlterationsResult.cs" />
     <Compile Include="QnAMakerClient.cs" />
